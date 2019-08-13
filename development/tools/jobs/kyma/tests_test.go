@@ -35,7 +35,7 @@ var tests = []struct {
 	{path: "integration/event-service", image: tester.ImageGolangBuildpackLatest},
 	{path: "integration/gateway", image: tester.ImageGolangBuildpackLatest},
 	{path: "integration/logging", image: tester.ImageGolangBuildpackLatest, additionalOptions: []buildjob.Option{
-		buildjob.Until(tester.Release13),
+		buildjob.Since(tester.Release14),
 	}},
 	{path: "integration/monitoring", image: tester.ImageGolangBuildpackLatest, additionalOptions: []buildjob.Option{
 		buildjob.Since(tester.Release14),
