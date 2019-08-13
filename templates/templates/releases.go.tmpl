@@ -11,7 +11,7 @@ var (
 )
 
 // GetAllKymaReleaseBranches returns all supported kyma release branches
-func GetAllKymaReleaseBranches() []*SupportedRelease {
+func GetAllKymaReleases() []*SupportedRelease {
 	return []*SupportedRelease{
 {{- range .Global.releases }}
 		Release{{ . | replace "." "" }},

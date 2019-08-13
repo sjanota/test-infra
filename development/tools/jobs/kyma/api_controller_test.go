@@ -13,3 +13,4 @@ func TestApiController(t *testing.T) {
 		buildjob.KymaRepo(),
 	).Run(t)
 }
+

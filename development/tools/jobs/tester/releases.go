@@ -10,7 +10,7 @@ var (
 	Release12 = mustParse("1.2")
 )
 
-// GetAllKymaReleases returns all supported kyma release branches
+// GetAllKymaReleaseBranches returns all supported kyma release branches
 func GetAllKymaReleases() []*SupportedRelease {
 	return []*SupportedRelease{
 		Release14,

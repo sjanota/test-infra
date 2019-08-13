@@ -18,9 +18,10 @@ type Suite struct {
 	releases          []*SupportedRelease
 	runIfChanged      string
 	runIfChangedCheck string
+	fileSuffix        string
+	noMaster          bool
 }
 
-type Option func(suite *Suite)
 
 func NewSuite(opts ...Option) *Suite {
 	suite := &Suite{
@@ -31,26 +32,6 @@ func NewSuite(opts ...Option) *Suite {
 	}
 	setDefaults(suite)
 	return suite
-}
-
-func Component(name, image string) Option {
-	return func(suite *Suite) {
-		suite.path = fmt.Sprintf("components/%s", name)
-		suite.image = image
-	}
-}
-
-func Test(name, image string) Option {
-	return func(suite *Suite) {
-		suite.path = fmt.Sprintf("tests/%s", name)
-		suite.image = image
-	}
-}
-
-func KymaRepo() Option {
-	return func(suite *Suite) {
-		suite.repository = "github.com/kyma-project/kyma"
-	}
 }
 
 func setDefaults(s *Suite) {
@@ -79,7 +60,7 @@ func (s *Suite) moduleName() string {
 }
 
 func (s *Suite) jobConfigPath() string {
-	return fmt.Sprintf("./../../../../prow/jobs/%s/%s/%s.yaml", s.repositoryName(), s.path, s.componentName())
+	return fmt.Sprintf("./../../../../prow/jobs/%s/%s/%s%s.yaml", s.repositoryName(), s.path, s.componentName(), s.fileSuffix)
 }
 
 func (s *Suite) jobName(prefix string) string {
@@ -94,17 +75,26 @@ func (s *Suite) Run(t *testing.T) {
 	jobConfig, err := ReadJobConfig(s.jobConfigPath())
 	require.NoError(t, err)
 
-	expectedNumberOfPresubmits := len(s.releases) + 1
+	expectedNumberOfPresubmits := len(s.releases)
+	if !s.noMaster {
+		expectedNumberOfPresubmits++
+	}
 	require.Len(t, jobConfig.Presubmits, 1)
 	require.Len(t, jobConfig.Presubmits[s.repositorySectionKey()], expectedNumberOfPresubmits)
 
-	require.Len(t, jobConfig.Postsubmits, 1)
-	require.Len(t, jobConfig.Postsubmits[s.repositorySectionKey()], 1)
+	if !s.noMaster {
+		require.Len(t, jobConfig.Postsubmits, 1)
+		require.Len(t, jobConfig.Postsubmits[s.repositorySectionKey()], 1)
+	} else {
+		require.Empty(t, jobConfig.Postsubmits)
+	}
 
 	require.Empty(t, jobConfig.Periodics)
 
-	t.Run("pre-master", s.preMasterTest(jobConfig))
-	t.Run("post-master", s.postMasterTest(jobConfig))
+	if !s.noMaster {
+		t.Run("pre-master", s.preMasterTest(jobConfig))
+		t.Run("post-master", s.postMasterTest(jobConfig))
+	}
 	t.Run("release", s.preReleaseTest(jobConfig))
 }
 

@@ -7,9 +7,10 @@ import (
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 )
 
-func TestApplicationBrokerServer(t *testing.T) {
+func TestApplicationBroker(t *testing.T) {
 	buildjob.NewSuite(
 		buildjob.Component("application-broker", tester.ImageGolangBuildpack1_11),
 		buildjob.KymaRepo(),
 	).Run(t)
 }
+
