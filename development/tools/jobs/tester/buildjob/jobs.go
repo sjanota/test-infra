@@ -118,15 +118,16 @@ func (s *Suite) preMasterTest(jobConfig config.JobConfig) func(t *testing.T) {
 		require.NotNil(t, actualPresubmit)
 
 		assert.Equal(t, []string{"^master$"}, actualPresubmit.Branches)
-		assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 		assert.False(t, actualPresubmit.SkipReport)
 		assert.True(t, actualPresubmit.Decorate)
+		assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 		assert.Equal(t, s.Repository, actualPresubmit.PathAlias)
+		AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, s.Image, s.workingdirectory())
+		AssertThatSpecifiesResourceRequests(t, actualPresubmit.JobBase)
 		AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
 		AssertThatHasPresets(t, actualPresubmit.JobBase, PresetDindEnabled, PresetDockerPushRepo, PresetGcrPush, PresetBuildPr)
 		AssertThatJobRunIfChanged(t, *actualPresubmit, s.RunIfChangedCheck)
 		assert.Equal(t, s.RunIfChanged, actualPresubmit.RunIfChanged)
-		AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, s.Image, s.workingdirectory())
 	}
 }
 
@@ -164,12 +165,13 @@ func (s *Suite) preReleaseTest(jobConfig config.JobConfig) func(t *testing.T) {
 				assert.Equal(t, []string{currentRelease.Branch()}, actualPresubmit.Branches)
 				assert.False(t, actualPresubmit.SkipReport)
 				assert.True(t, actualPresubmit.Decorate)
+				assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 				assert.Equal(t, s.Repository, actualPresubmit.PathAlias)
-				AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease.Branch())
-				AssertThatHasPresets(t, actualPresubmit.JobBase, PresetDindEnabled, PresetDockerPushRepo, PresetGcrPush, PresetBuildRelease)
-				AssertThatJobRunIfChanged(t, *actualPresubmit, s.RunIfChangedCheck)
 				assert.True(t, actualPresubmit.AlwaysRun)
 				AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, s.Image, s.workingdirectory())
+				AssertThatSpecifiesResourceRequests(t, actualPresubmit.JobBase)
+				AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease.Branch())
+				AssertThatHasPresets(t, actualPresubmit.JobBase, PresetDindEnabled, PresetDockerPushRepo, PresetGcrPush, PresetBuildRelease)
 			})
 		}
 	}
