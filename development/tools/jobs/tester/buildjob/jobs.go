@@ -12,19 +12,19 @@ import (
 )
 
 type Suite struct {
-	Path              string
-	Repository        string
-	Image             string
-	Releases          []*SupportedRelease
-	RunIfChanged      string
-	RunIfChangedCheck string
+	path              string
+	repository        string
+	image             string
+	releases          []*SupportedRelease
+	runIfChanged      string
+	runIfChangedCheck string
 }
 
 type Option func(suite *Suite)
 
 func NewSuite(opts ...Option) *Suite {
 	suite := &Suite{
-		Releases: GetAllKymaReleases(),
+		releases: GetAllKymaReleases(),
 	}
 	for _, opt := range opts {
 		opt(suite)
@@ -35,51 +35,51 @@ func NewSuite(opts ...Option) *Suite {
 
 func Component(name, image string) Option {
 	return func(suite *Suite) {
-		suite.Path = fmt.Sprintf("components/%s", name)
-		suite.Image = image
+		suite.path = fmt.Sprintf("components/%s", name)
+		suite.image = image
 	}
 }
 
 func Test(name, image string) Option {
 	return func(suite *Suite) {
-		suite.Path = fmt.Sprintf("tests/%s", name)
-		suite.Image = image
+		suite.path = fmt.Sprintf("tests/%s", name)
+		suite.image = image
 	}
 }
 
 func KymaRepo() Option {
 	return func(suite *Suite) {
-		suite.Repository = "github.com/kyma-project/kyma"
+		suite.repository = "github.com/kyma-project/kyma"
 	}
 }
 
 func setDefaults(s *Suite) {
-	if s.RunIfChanged == "" {
-		s.RunIfChanged = fmt.Sprintf("^%s/", s.Path)
+	if s.runIfChanged == "" {
+		s.runIfChanged = fmt.Sprintf("^%s/", s.path)
 	}
-	if s.RunIfChangedCheck == "" {
-		s.RunIfChangedCheck = fmt.Sprintf("%s/fix", s.Path)
+	if s.runIfChangedCheck == "" {
+		s.runIfChangedCheck = fmt.Sprintf("%s/fix", s.path)
 	}
 }
 
 func (s *Suite) componentName() string {
-	return path.Base(s.Path)
+	return path.Base(s.path)
 }
 
 func (s *Suite) repositoryName() string {
-	return path.Base(s.Repository)
+	return path.Base(s.repository)
 }
 
 func (s *Suite) repositorySectionKey() string {
-	return strings.Replace(s.Repository, "github.com/", "", 1)
+	return strings.Replace(s.repository, "github.com/", "", 1)
 }
 
 func (s *Suite) moduleName() string {
-	return fmt.Sprintf("%s-%s", s.repositoryName(), strings.Replace(s.Path, "/", "-", -1))
+	return fmt.Sprintf("%s-%s", s.repositoryName(), strings.Replace(s.path, "/", "-", -1))
 }
 
 func (s *Suite) jobConfigPath() string {
-	return fmt.Sprintf("./../../../../prow/jobs/%s/%s/%s.yaml", s.repositoryName(), s.Path, s.componentName())
+	return fmt.Sprintf("./../../../../prow/jobs/%s/%s/%s.yaml", s.repositoryName(), s.path, s.componentName())
 }
 
 func (s *Suite) jobName(prefix string) string {
@@ -87,14 +87,14 @@ func (s *Suite) jobName(prefix string) string {
 }
 
 func (s *Suite) workingdirectory() string {
-	return fmt.Sprintf("/home/prow/go/src/%s/%s", s.Repository, s.Path)
+	return fmt.Sprintf("/home/prow/go/src/%s/%s", s.repository, s.path)
 }
 
 func (s *Suite) Run(t *testing.T) {
 	jobConfig, err := ReadJobConfig(s.jobConfigPath())
 	require.NoError(t, err)
 
-	expectedNumberOfPresubmits := len(s.Releases) + 1
+	expectedNumberOfPresubmits := len(s.releases) + 1
 	require.Len(t, jobConfig.Presubmits, 1)
 	require.Len(t, jobConfig.Presubmits[s.repositorySectionKey()], expectedNumberOfPresubmits)
 
@@ -121,13 +121,13 @@ func (s *Suite) preMasterTest(jobConfig config.JobConfig) func(t *testing.T) {
 		assert.False(t, actualPresubmit.SkipReport)
 		assert.True(t, actualPresubmit.Decorate)
 		assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
-		assert.Equal(t, s.Repository, actualPresubmit.PathAlias)
-		AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, s.Image, s.workingdirectory())
+		assert.Equal(t, s.repository, actualPresubmit.PathAlias)
+		AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, s.image, s.workingdirectory())
 		AssertThatSpecifiesResourceRequests(t, actualPresubmit.JobBase)
 		AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
 		AssertThatHasPresets(t, actualPresubmit.JobBase, PresetDindEnabled, PresetDockerPushRepo, PresetGcrPush, PresetBuildPr)
-		AssertThatJobRunIfChanged(t, *actualPresubmit, s.RunIfChangedCheck)
-		assert.Equal(t, s.RunIfChanged, actualPresubmit.RunIfChanged)
+		AssertThatJobRunIfChanged(t, *actualPresubmit, s.runIfChangedCheck)
+		assert.Equal(t, s.runIfChanged, actualPresubmit.RunIfChanged)
 	}
 }
 
@@ -143,17 +143,17 @@ func (s *Suite) postMasterTest(jobConfig config.JobConfig) func(t *testing.T) {
 		assert.Equal(t, []string{"^master$"}, actualPostsubmit.Branches)
 		assert.Equal(t, 10, actualPostsubmit.MaxConcurrency)
 		assert.True(t, actualPostsubmit.Decorate)
-		assert.Equal(t, s.Repository, actualPostsubmit.PathAlias)
+		assert.Equal(t, s.repository, actualPostsubmit.PathAlias)
 		AssertThatHasExtraRefTestInfra(t, actualPostsubmit.JobBase.UtilityConfig, "master")
 		AssertThatHasPresets(t, actualPostsubmit.JobBase, PresetDindEnabled, PresetDockerPushRepo, PresetGcrPush, PresetBuildMaster)
-		assert.Equal(t, s.RunIfChanged, actualPostsubmit.RunIfChanged)
-		AssertThatExecGolangBuildpack(t, actualPostsubmit.JobBase, s.Image, s.workingdirectory())
+		assert.Equal(t, s.runIfChanged, actualPostsubmit.RunIfChanged)
+		AssertThatExecGolangBuildpack(t, actualPostsubmit.JobBase, s.image, s.workingdirectory())
 	}
 }
 
 func (s *Suite) preReleaseTest(jobConfig config.JobConfig) func(t *testing.T) {
 	return func(t *testing.T) {
-		for _, currentRelease := range s.Releases {
+		for _, currentRelease := range s.releases {
 			t.Run(currentRelease.String(), func(t *testing.T) {
 				actualPresubmit := FindPresubmitJobByName(
 					jobConfig.Presubmits[s.repositorySectionKey()],
@@ -166,9 +166,9 @@ func (s *Suite) preReleaseTest(jobConfig config.JobConfig) func(t *testing.T) {
 				assert.False(t, actualPresubmit.SkipReport)
 				assert.True(t, actualPresubmit.Decorate)
 				assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
-				assert.Equal(t, s.Repository, actualPresubmit.PathAlias)
+				assert.Equal(t, s.repository, actualPresubmit.PathAlias)
 				assert.True(t, actualPresubmit.AlwaysRun)
-				AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, s.Image, s.workingdirectory())
+				AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, s.image, s.workingdirectory())
 				AssertThatSpecifiesResourceRequests(t, actualPresubmit.JobBase)
 				AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease.Branch())
 				AssertThatHasPresets(t, actualPresubmit.JobBase, PresetDindEnabled, PresetDockerPushRepo, PresetGcrPush, PresetBuildRelease)
