@@ -12,6 +12,7 @@ var tools = []struct {
 	additionalOptions []buildjob.Option
 }{
 	{path:"load-test", image: tester.ImageGolangBuildpackLatest},
+	{path:"alpine-net", image: tester.ImageGolangBuildpackLatest},
 }
 
 func TestToolsJobs(t *testing.T) {
