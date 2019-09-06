@@ -12,7 +12,7 @@ var tests = []struct {
 	additionalOptions []buildjob.Option
 }{
 	{path: "end-to-end/backup-restore-test", image: tester.ImageGolangBuildpack1_11},
-	//{path: "end-to-end/external-solution-integration", image: tester.ImageGolangBuildpack1_11},
+	{path: "end-to-end/external-solution-integration", image: tester.ImageGolangBuildpack1_11},
 	{path: "end-to-end/kubeless-integration", image: tester.ImageGolangBuildpack1_11},
 	{path: "end-to-end/upgrade", image: tester.ImageGolangBuildpack1_11, additionalOptions: []buildjob.Option{
 		buildjob.RunIfChanged("^tests/end-to-end/upgrade/[^chart]", "tests/end-to-end/upgrade/fix"),

@@ -37,10 +37,10 @@ func main() {
 				return err
 			}
 
-			jobTestsDir := filepath.Join(".", *testsDir, filepath.Dir(relativeJobPath))
+			jobTestsDir := filepath.Join(*testsDir, filepath.Dir(relativeJobPath))
 			log.Printf("Checking %s. Run tests in %s", path, jobTestsDir)
 			defer func() { _ = os.Rename(newPath, path) }()
-			if !checkIfTestsFail(jobTestsDir) {
+			if !isOk(jobTestsDir) {
 				missedFiles = append(missedFiles, path)
 			}
 
@@ -76,12 +76,20 @@ func initFlags() {
 	flag.Parse()
 }
 
-func checkIfTestsFail(dir string) bool {
-	if _, err := os.Stat(dir); os.IsNotExist(err) {
-		log.Printf("Test directory does not exist: %s", dir)
+func isOk(jobTestDir string) bool {
+	return testPackageExists(jobTestDir) && testFails(jobTestDir)
+}
+
+func testPackageExists(jobTestDir string) bool {
+	if _, err := os.Stat(jobTestDir); os.IsNotExist(err) {
+		log.Printf("Test directory does not exist: %s", jobTestDir)
 		return false
 	}
-	cmd := exec.Command("go", "test", dir)
+	return true
+}
+
+func testFails(dir string) bool {
+	cmd := exec.Command("go", "test", "./"+dir)
 	err := cmd.Run()
 	if err != nil && err.Error() != "exit status 1" {
 		log.Printf("Error while running tests: %s", err)
