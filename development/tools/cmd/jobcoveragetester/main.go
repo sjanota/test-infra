@@ -26,7 +26,6 @@ func main() {
 	err := filepath.Walk(*jobsDir, func(path string, info os.FileInfo, err error) error {
 		if !info.IsDir() {
 			newPath := fmt.Sprintf("%s.bkp", path)
-
 			err = os.Rename(path, newPath)
 			if err != nil {
 				return err
@@ -44,8 +43,6 @@ func main() {
 				return errors.New("interrupted")
 			default:
 			}
-
-			return nil
 		}
 		return nil
 	})
@@ -62,6 +59,7 @@ func main() {
 	for _, f := range missedFiles {
 		fmt.Printf(" * %s\n", f)
 	}
+	log.Println("Either remove them or add missing tests.")
 	os.Exit(1)
 }
 

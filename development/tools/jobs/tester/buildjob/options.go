@@ -40,6 +40,12 @@ func KymaRepo() Option {
 	}
 }
 
+func CompassRepo() Option {
+	return func(suite *Suite) {
+		suite.repository = "github.com/kyma-incubator/compass"
+	}
+}
+
 func JobFileSuffix(suffix string) Option {
 	return func(suite *Suite) {
 		suite.jobsFileSuffix = "-" + suffix
@@ -56,6 +62,12 @@ func Until(rel *SupportedRelease) Option {
 func AllReleases() Option {
 	return func(suite *Suite) {
 		suite.releases = GetAllKymaReleases()
+	}
+}
+
+func NoReleases() Option {
+	return func(suite *Suite) {
+		suite.releases = []*SupportedRelease{}
 	}
 }
 
