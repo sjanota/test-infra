@@ -10,7 +10,7 @@ import (
 
 func TestSlackConnectorJobPresubmit(t *testing.T) {
 	//WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/hack-showcase/slack-connector/slack-connector.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/hack-showcase/slack-connector.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -39,7 +39,7 @@ func TestSlackConnectorJobPresubmit(t *testing.T) {
 
 func TestSlackConnectorJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/hack-showcase/slack-connector/slack-connector.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/hack-showcase/slack-connector.yaml")
 	// THEN
 	require.NoError(t, err)
 

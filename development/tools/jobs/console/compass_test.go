@@ -10,7 +10,7 @@ import (
 
 func TestCompassJobPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/console/compass/compass.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/console/compass.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -35,7 +35,7 @@ func TestCompassJobPresubmit(t *testing.T) {
 
 func TestCompassJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/console/compass/compass.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/console/compass.yaml")
 	// THEN
 	require.NoError(t, err)
 

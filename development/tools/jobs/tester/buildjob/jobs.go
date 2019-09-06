@@ -12,6 +12,7 @@ import (
 )
 
 type Suite struct {
+	repositoryRoot           string
 	path                     string
 	repository               string
 	image                    string
@@ -20,6 +21,7 @@ type Suite struct {
 	fileExpectedToTriggerJob string
 	jobsFileSuffix           string
 	doNotExpectMasterJobs    bool
+	jobFilePath              string
 }
 
 
@@ -49,7 +51,11 @@ func (s *Suite) moduleName() string {
 }
 
 func (s *Suite) jobConfigPath() string {
-	return fmt.Sprintf("./../../../../prow/jobs/%s/%s/%s%s.yaml", s.repositoryName(), s.path, s.componentName(), s.jobsFileSuffix)
+	jobFilePath := s.jobFilePath
+	if s.jobFilePath == "" {
+		jobFilePath = fmt.Sprintf("%s%s.yaml", s.path, s.jobsFileSuffix)
+	}
+	return fmt.Sprintf("%s/prow/jobs/%s/%s", s.repositoryRoot, s.repositoryName(), jobFilePath)
 }
 
 func (s *Suite) jobName(prefix string) string {

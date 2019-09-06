@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const connectorJobPath = "./../../../../../prow/jobs/incubator/compass/components/connector/connector.yaml"
+const connectorJobPath = "./../../../../../prow/jobs/incubator/compass/connector.yaml"
 
 func TestConnectorJobPresubmit(t *testing.T) {
 	// WHEN

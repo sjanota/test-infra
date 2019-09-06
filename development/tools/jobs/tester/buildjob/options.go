@@ -71,3 +71,15 @@ func RunIfChanged(regexp, fileToCheck string) Option {
 		suite.fileExpectedToTriggerJob = fileToCheck
 	}
 }
+
+func RepositoryRoot(repositoryRoot string) Option {
+	return func(suite *Suite) {
+		suite.repositoryRoot = repositoryRoot
+	}
+}
+
+func JobFilePath(path string) Option {
+	return func(suite *Suite) {
+		suite.jobFilePath = path
+	}
+}

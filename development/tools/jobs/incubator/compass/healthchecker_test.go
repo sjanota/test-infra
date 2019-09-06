@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const healthcheckerJobPath = "./../../../../../prow/jobs/incubator/compass/components/healthchecker/healthchecker.yaml"
+const healthcheckerJobPath = "./../../../../../prow/jobs/incubator/compass/healthchecker.yaml"
 
 func TestHealthcheckerJobPresubmit(t *testing.T) {
 	// WHEN

@@ -10,7 +10,7 @@ import (
 
 func TestContentJobPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/console/content/content.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/console/content.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -35,7 +35,7 @@ func TestContentJobPresubmit(t *testing.T) {
 
 func TestContentJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/console/content/content.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/console/content.yaml")
 	// THEN
 	require.NoError(t, err)
 

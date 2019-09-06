@@ -10,7 +10,7 @@ import (
 
 func TestMonitoringCustomMetricsJobsPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/examples/monitoring-custom-metrics/monitoring-custom-metrics.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/examples/monitoring-custom-metrics.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -37,7 +37,7 @@ func TestMonitoringCustomMetricsJobsPresubmit(t *testing.T) {
 
 func TestMonitoringCustomMetricsJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/examples/monitoring-custom-metrics/monitoring-custom-metrics.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/examples/monitoring-custom-metrics.yaml")
 	// THEN
 	require.NoError(t, err)
 

@@ -10,7 +10,7 @@ import (
 
 func TestLambdaJobPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/console/lambda/lambda.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/console/lambda.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -35,7 +35,7 @@ func TestLambdaJobPresubmit(t *testing.T) {
 
 func TestLambdaJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/console/lambda/lambda.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/console/lambda.yaml")
 	// THEN
 	require.NoError(t, err)
 

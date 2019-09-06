@@ -10,7 +10,7 @@ import (
 
 func TestTracingJobsPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/examples/tracing/tracing.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/examples/tracing.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -37,7 +37,7 @@ func TestTracingJobsPresubmit(t *testing.T) {
 
 func TestTracingJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/examples/tracing/tracing.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/examples/tracing.yaml")
 	// THEN
 	require.NoError(t, err)
 

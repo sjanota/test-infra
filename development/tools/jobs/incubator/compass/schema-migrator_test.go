@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const schemaMigratorJobPath = "./../../../../../prow/jobs/incubator/compass/components/schema-migrator/schema-migrator.yaml"
+const schemaMigratorJobPath = "./../../../../../prow/jobs/incubator/compass/schema-migrator.yaml"
 
 func TestSchemaMigratorJobPresubmit(t *testing.T) {
 	// WHEN

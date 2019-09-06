@@ -10,7 +10,7 @@ import (
 
 func TestEventEmailServiceJobsPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/examples/event-email-service/event-email-service.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/examples/event-email-service.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -37,7 +37,7 @@ func TestEventEmailServiceJobsPresubmit(t *testing.T) {
 
 func TestEventEmailServiceJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/examples/event-email-service/event-email-service.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/examples/event-email-service.yaml")
 	// THEN
 	require.NoError(t, err)
 

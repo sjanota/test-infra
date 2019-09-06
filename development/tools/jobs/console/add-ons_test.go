@@ -10,7 +10,7 @@ import (
 
 func TestAddOnsJobPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/console/add-ons/add-ons.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/console/add-ons.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -35,7 +35,7 @@ func TestAddOnsJobPresubmit(t *testing.T) {
 
 func TestAddOnsJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/console/add-ons/add-ons.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/console/add-ons.yaml")
 	// THEN
 	require.NoError(t, err)
 

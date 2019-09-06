@@ -10,7 +10,7 @@ import (
 
 func TestGithubConnectorJobPresubmit(t *testing.T) {
 	//WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/hack-showcase/github-connector/github-connector.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/hack-showcase/github-connector.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -39,7 +39,7 @@ func TestGithubConnectorJobPresubmit(t *testing.T) {
 
 func TestGithubConnectorJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/hack-showcase/github-connector/github-connector.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/hack-showcase/github-connector.yaml")
 	// THEN
 	require.NoError(t, err)
 

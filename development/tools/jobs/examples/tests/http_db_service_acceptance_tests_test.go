@@ -10,7 +10,7 @@ import (
 
 func TestHttpDbServiceAcceptanceTestsJobsPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/examples/tests/http-db-service-acceptance-tests/http-db-service-acceptance-tests.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/examples/tests/http-db-service-acceptance-tests.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -37,7 +37,7 @@ func TestHttpDbServiceAcceptanceTestsJobsPresubmit(t *testing.T) {
 
 func TestHttpDbServiceAcceptanceTestsJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/examples/tests/http-db-service-acceptance-tests/http-db-service-acceptance-tests.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/examples/tests/http-db-service-acceptance-tests.yaml")
 	// THEN
 	require.NoError(t, err)
 

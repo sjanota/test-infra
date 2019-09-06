@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const compassEndToEndTestJobPath = "./../../../../../prow/jobs/incubator/compass/tests/end-to-end/end-to-end.yaml"
+const compassEndToEndTestJobPath = "./../../../../../prow/jobs/incubator/compass/end-to-end.yaml"
 
 func TestCompassEndToEndJobPresubmit(t *testing.T) {
 	// WHEN

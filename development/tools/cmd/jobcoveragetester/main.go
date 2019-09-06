@@ -9,7 +9,6 @@ import (
 	"os/exec"
 	"os/signal"
 	"path/filepath"
-	"strings"
 	"syscall"
 )
 
@@ -27,21 +26,21 @@ func main() {
 	err := filepath.Walk(*jobsDir, func(path string, info os.FileInfo, err error) error {
 		if !info.IsDir() {
 			newPath := fmt.Sprintf("%s.bkp", path)
-			relativeJobPath, err  := filepath.Rel(*jobsDir, path)
-			if err != nil {
-				return err
-			}
 
-			jobRepository := strings.Split(relativeJobPath, string(os.PathSeparator))[0]
-			jobTestsDir := filepath.Join(*testsDir, jobRepository)
 			err = os.Rename(path, newPath)
 			if err != nil {
 				return err
 			}
 
+			relativeJobPath, err  := filepath.Rel(*jobsDir, path)
+			if err != nil {
+				return err
+			}
+
+			jobTestsDir := filepath.Join(".", *testsDir, filepath.Dir(relativeJobPath))
 			log.Printf("Checking %s. Run tests in %s", path, jobTestsDir)
 			defer func() { _ = os.Rename(newPath, path) }()
-			if runTests(jobTestsDir) {
+			if !checkIfTestsFail(jobTestsDir) {
 				missedFiles = append(missedFiles, path)
 			}
 
@@ -77,11 +76,15 @@ func initFlags() {
 	flag.Parse()
 }
 
-func runTests(dir string) bool {
-	cmd := exec.Command("go", "test", "./"+dir+"/...")
+func checkIfTestsFail(dir string) bool {
+	if _, err := os.Stat(dir); os.IsNotExist(err) {
+		log.Printf("Test directory does not exist: %s", dir)
+		return false
+	}
+	cmd := exec.Command("go", "test", dir)
 	err := cmd.Run()
 	if err != nil && err.Error() != "exit status 1" {
 		log.Printf("Error while running tests: %s", err)
 	}
-	return err == nil
+	return err != nil
 }

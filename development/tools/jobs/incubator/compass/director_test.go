@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const directorJobPath = "./../../../../../prow/jobs/incubator/compass/components/director/director.yaml"
+const directorJobPath = "./../../../../../prow/jobs/incubator/compass/director.yaml"
 
 func TestDirectorJobPresubmit(t *testing.T) {
 	// WHEN
