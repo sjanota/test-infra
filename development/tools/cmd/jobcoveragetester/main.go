@@ -1,7 +1,7 @@
 package main
 
 import (
-	"errors"
+	"github.com/pkg/errors"
 	"flag"
 	"fmt"
 	"log"
@@ -31,17 +31,12 @@ func main() {
 			if err != nil {
 				return err
 			}
-
-			relativeJobPath, err  := filepath.Rel(*jobsDir, path)
-			if err != nil {
-				return err
-			}
-
-			jobTestsDir := filepath.Join(*testsDir, filepath.Dir(relativeJobPath))
-			log.Printf("Checking %s. Run tests in %s", path, jobTestsDir)
 			defer func() { _ = os.Rename(newPath, path) }()
-			if !isOk(jobTestsDir) {
+
+			if tested, err := isJobTested(path); !tested {
 				missedFiles = append(missedFiles, path)
+			} else if err != nil {
+				return err
 			}
 
 			select {
@@ -76,8 +71,25 @@ func initFlags() {
 	flag.Parse()
 }
 
-func isOk(jobTestDir string) bool {
-	return testPackageExists(jobTestDir) && testFails(jobTestDir)
+func getTestPackagePathForJob(jobPath string) (string, error) {
+	relativeJobPath, err := filepath.Rel(*jobsDir, jobPath)
+	if err != nil {
+		return "", err
+	}
+
+	return filepath.Join(*testsDir, filepath.Dir(relativeJobPath)), nil
+}
+
+func isJobTested(jobsFilePath string) (bool, error) {
+	jobTestsDir, err := getTestPackagePathForJob(jobsFilePath)
+	if err != nil {
+		return false, err
+	}
+	log.Printf("Checking %s. Run tests in %s", jobsFilePath, jobTestsDir)
+	if !testPackageExists(jobTestsDir) {
+		return false, nil
+	}
+	return testFails(jobTestsDir)
 }
 
 func testPackageExists(jobTestDir string) bool {
@@ -88,11 +100,11 @@ func testPackageExists(jobTestDir string) bool {
 	return true
 }
 
-func testFails(dir string) bool {
+func testFails(dir string) (bool, error) {
 	cmd := exec.Command("go", "test", "./"+dir)
 	err := cmd.Run()
 	if err != nil && err.Error() != "exit status 1" {
-		log.Printf("Error while running tests: %s", err)
+		return false, errors.Wrap(err, "while running tests")
 	}
-	return err != nil
+	return err != nil, nil
 }
