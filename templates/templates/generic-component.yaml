@@ -69,12 +69,12 @@ job_template: &job_template
 
 presubmits: # runs on PRs
   {{ .Values.repository | replace "github.com/" "" }}:
-    - name: pre-{{ $repositoryName }}-{{ .Values.path | replace "/" "-" }}
+    - name: {{ .Values.path | replace "/" "-" }}
       skip_report: false
       optional: true
       <<: *job_template
 
 postsubmits:
   {{ .Values.repository | replace "github.com/" "" }}:
-    - name: post-{{ $repositoryName }}-{{ .Values.path | replace "/" "-" }}
+    - name: {{ .Values.path | replace "/" "-" }}
       <<: *job_template

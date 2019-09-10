@@ -36,7 +36,7 @@ func (s GenericComponentSuite) testRunAgainstEnyBranch(t *testing.T) {
 
 func (s GenericComponentSuite) testPresubmitJob(jobConfig config.JobConfig) func(t *testing.T) {
 	return func(t *testing.T) {
-		job := FindPresubmitJobByName(jobConfig.Presubmits[s.repositorySectionKey()], s.jobName("pre"))
+		job := FindPresubmitJobByName(jobConfig.Presubmits[s.repositorySectionKey()], s.jobName())
 		require.NotNil(t, job)
 
 		assert.False(t, job.SkipReport, "Must not skip report")
@@ -61,7 +61,7 @@ func (s GenericComponentSuite) testPresubmitJob(jobConfig config.JobConfig) func
 
 func (s GenericComponentSuite) testPostsubmitJob(jobConfig config.JobConfig) func(t *testing.T) {
 	return func(t *testing.T) {
-		job := FindPostsubmitJobByName(jobConfig.Postsubmits[s.repositorySectionKey()], s.jobName("post"))
+		job := FindPostsubmitJobByName(jobConfig.Postsubmits[s.repositorySectionKey()], s.jobName())
 		require.NotNil(t, job, "Job must exists")
 
 		assert.True(t, job.Decorate, "Must decorate")
@@ -99,12 +99,8 @@ func (s GenericComponentSuite) repositorySectionKey() string {
 	return strings.Replace(s.Repository, "github.com/", "", 1)
 }
 
-func (s GenericComponentSuite) jobName(prefix string) string {
-	return fmt.Sprintf("%s-%s", prefix, s.moduleName())
-}
-
-func (s GenericComponentSuite) moduleName() string {
-	return fmt.Sprintf("%s-%s", s.repositoryName(), strings.Replace(s.Path, "/", "-", -1))
+func (s GenericComponentSuite) jobName() string {
+	return fmt.Sprintf(strings.Replace(s.Path, "/", "-", -1))
 }
 
 func (s GenericComponentSuite) workingDirectory() string {
